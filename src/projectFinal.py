@@ -16,7 +16,6 @@ player_velocity = 5
 
 star_width = 10
 star_height = 20
-hit = False
 star_velocity = 3
 
 def draw(player, elapsed_time, stars):
@@ -49,6 +48,7 @@ def main():
     star_count = 0
 
     stars= []
+    hit = False
 
     while run:
         star_count += clock.tick(60)
@@ -59,6 +59,8 @@ def main():
                 star_x = random.randint(0, width - star_width)
                 star = pygame.Rect(star_x, -star_height, 
                                    star_width, star_height)
+                stars.append(star)
+
             star_add_increment = max(200, star_add_increment - 50)
             star_count = 0
 
@@ -77,10 +79,18 @@ def main():
             star.y += star_velocity
             if star.y > height:
                 stars.remove(star)
-            elif star.y + star.height>= player.y and star.colliderect(player):
+            elif star.y + star.height >= player.y and star.colliderect(player):
                 stars.remove(star)
                 hit = True
                 break
+
+        if hit:
+            lost_text = font.render("You Lost!", 1, "white")
+            win.blit(lost_text, (width/2 - lost_text.get_width()/2,
+                                  height/2 - lost_text.get_height()/2))
+            pygame.display.update()
+            pygame.time.delay(4000)
+            break
 
 
         draw(player, elapsed_time, stars)

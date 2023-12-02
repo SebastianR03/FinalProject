@@ -4,7 +4,7 @@ import random
 
 
 pygame.font.init()
-font = pygame.font.SysFont("ariel", 30)
+font = pygame.font.SysFont("ariel", 50)
 width, height = 960, 960
 win = pygame.display.set_mode((width, height))
 pygame.display.set_caption("Don't Die")
@@ -18,11 +18,15 @@ star_width = 10
 star_height = 20
 star_velocity = 3
 
-def draw(player, elapsed_time, stars):
+lives = 3
+
+def draw(player, elapsed_time, stars, health):
     win.blit(back_ground, (0, 0))
 
-    time_text = font.render(f"Time: {round(elapsed_time)}s", 1, "white")
+    time_text = font.render(f"Time: {round(elapsed_time)}s", 1, (153, 185, 255))
     win.blit(time_text, (10, 10))
+    lives_text = font.render(f"Lives: {health}", 1,(61, 210, 255))
+    win.blit(lives_text,(10, 50))
 
     pygame.draw.rect(win, "white", player)
 
@@ -48,7 +52,7 @@ def main():
     star_count = 0
 
     stars= []
-    hit = False
+    health = lives
 
     while run:
         star_count += clock.tick(60)
@@ -88,10 +92,11 @@ def main():
                 stars.remove(star)
             elif star.y + star.height >= player.y and star.colliderect(player):
                 stars.remove(star)
-                hit = True
+                health -= 1
                 break
 
-        if hit:
+
+        if health == 0:
             lost_text = font.render("You Lost!", 1, "white")
             win.blit(lost_text, (width/2 - lost_text.get_width()/2,
                                   height/2 - lost_text.get_height()/2))
@@ -99,8 +104,10 @@ def main():
             pygame.time.delay(4000)
             break
 
+        
 
-        draw(player, elapsed_time, stars)
+
+        draw(player, elapsed_time, stars, health)
 
     pygame.quit()
 

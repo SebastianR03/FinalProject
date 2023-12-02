@@ -69,11 +69,18 @@ def main():
                 run = False
                 break
 
+
         keys = pygame.key.get_pressed()
         if keys[pygame.K_LEFT] and player.x - player_velocity >= 0:
             player.x -= player_velocity
         if keys[pygame.K_RIGHT] and player.x + player_velocity + player.width <= width:
             player.x += player_velocity
+        if keys[pygame.K_UP]:
+            player.y -= player_velocity
+        if keys[pygame.K_DOWN]:
+            player.y += player_velocity
+
+
 
         for star in stars[:]:
             star.y += star_velocity

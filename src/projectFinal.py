@@ -2,7 +2,7 @@ import pygame
 import time
 import random
 import os
-
+from os import path
 
 pygame.font.init()
 pygame.mixer.init()
@@ -12,6 +12,8 @@ width, height = 960, 960
 win = pygame.display.set_mode((width, height))
 pygame.display.set_caption("Don't Die")
 back_ground = pygame.image.load("spaceBackground.jpg")
+player_ship = pygame.image.load("spaceship.png")
+shooting_star = pygame.image.load("shootingstar.png")
 
 player_width = 40
 player_height = 60
@@ -22,19 +24,24 @@ star_height = 20
 star_velocity = 3
 
 lives = 3
+highscore_file = 'highscore.txt'
 
-def draw(player, elapsed_time, stars, health):
+def draw(player, elapsed_time, stars, health, highscore):
     win.blit(back_ground, (0, 0))
 
-    time_text = font.render(f"Time: {round(elapsed_time)}s", 1, (153, 185, 255))
+    time_text = font.render(f"Time: {round(elapsed_time)}s",
+                             1, (153, 185, 255))
     win.blit(time_text, (10, 10))
     lives_text = font.render(f"Lives: {health}", 1,(61, 210, 255))
     win.blit(lives_text,(10, 50))
+    #highscore_text = font.render(f"Best Time: {highscore}", 1, (223, 143, 227))
+    #win.blit(highscore_text, (10, 20))#height - 
 
-    pygame.draw.rect(win, (169, 184, 219), player)
+
+    win.blit(player_ship, player)
 
     for star in stars:
-        pygame.draw.rect(win, "white", star)
+        win.blit(shooting_star, star)
 
     pygame.display.update()
 
@@ -42,6 +49,13 @@ def draw(player, elapsed_time, stars, health):
 
 ####main game loop
 def main():
+    with open(highscore_file, 'w') as file:
+        try:
+            highscore = int(file.read())###
+        except:
+            highscore = 0
+
+
     music = pygame.mixer.music.load(os.path.join('gameMusic.mp3'))
     pygame.mixer.music.play(-1)
 
@@ -62,7 +76,7 @@ def main():
 
     while run:
         star_count += clock.tick(60)
-        elapsed_time = time.time() - start_time
+        elapsed_time = int(time.time() - start_time)
 
         if star_count > star_add_increment:
             for _ in range(3):
@@ -110,10 +124,12 @@ def main():
             pygame.time.delay(4000)
             break
 
-        
+        draw(player, elapsed_time, stars, health, highscore)
 
-
-        draw(player, elapsed_time, stars, health)
+    if elapsed_time > highscore:
+        highscore = elapsed_time
+        with open('highscore.txt', 'w') as file:
+            file.write(str(elapsed_time))
 
     pygame.quit()
 

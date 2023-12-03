@@ -97,6 +97,8 @@ def main():
     music = pygame.mixer.music.load(os.path.join('gameMusic.mp3'))
     pygame.mixer.music.play(-1)
 
+    pressed = False
+
     run = True
 
     player = pygame.Rect((width/2), height - player_height, 
@@ -116,7 +118,7 @@ def main():
     while run:
         star_count += clock.tick(60)
         elapsed_time = int(time.time() - start_time)
-        print(star_count)
+        #print(star_count)
 
         if star_count > star_add_increment:
             for _ in range(3):
@@ -125,7 +127,7 @@ def main():
                                    star_width, star_height)
                 stars.append(star)
 
-            star_add_increment = max(200, star_add_increment - 50)
+            star_add_increment = max(200, star_add_increment - 40)
             star_count = 0
 
         for event in pygame.event.get():
@@ -148,25 +150,26 @@ def main():
                                  (laser_width/2)), (player.y - 3), 
                                  laser_width, laser_height)
             lasers.append(laser)
+            pressed = True
 
 
+        if pressed == True:
+            for laser in lasers[:]:
+                print('laser 1')
+                for star in stars[:]:
+                    print('star 1')
+                    laser.y -= laser_velocity
+                    if laser.y + laser_height <= 0:
+                        del laser
+                        print('laser delete')
+                        pressed = False
 
-        for laser in lasers[:]:
-            laser.y -= laser_velocity
-            if laser.y < -height - laser_height:
-                del laser
-                print('laser delete')
-            #elif laser.y + laser_height <= star.y and laser.colliderect(star):
-            #    laser_hit = laser
 
-            for star in stars[:]:
-                if laser.y + laser_height <= star.y and laser.colliderect(star):
-                    #laser_hit = laser
-                    stars.remove(star)
-                    del laser
-       #             print('after star and laser delete')
-       #             #break_from_stars = True
-       #             break
+                    elif laser.y <= star.y + star.height and laser.colliderect(star):
+                        stars.remove(star)
+                        del laser
+                        pressed = False
+                        break
 
 
 

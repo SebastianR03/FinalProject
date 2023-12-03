@@ -116,6 +116,7 @@ def main():
     while run:
         star_count += clock.tick(60)
         elapsed_time = int(time.time() - start_time)
+        print(star_count)
 
         if star_count > star_add_increment:
             for _ in range(3):
@@ -142,31 +143,33 @@ def main():
             player.y -= player_velocity
         if keys[pygame.K_DOWN] and player.y + player_height + player_velocity <= height:
             player.y += player_velocity
-#---------------------------
         if keys[pygame.K_SPACE]:
             laser = pygame.Rect((player.x + (player.width/2) - 
                                  (laser_width/2)), (player.y - 3), 
                                  laser_width, laser_height)
             lasers.append(laser)
-            print('laser created')
+
+
 
         for laser in lasers[:]:
             laser.y -= laser_velocity
             if laser.y < -height - laser_height:
                 del laser
-                #break
+                print('laser delete')
+            #elif laser.y + laser_height <= star.y and laser.colliderect(star):
+            #    laser_hit = laser
 
             for star in stars[:]:
-                if laser.colliderect(star):
+                if laser.y + laser_height <= star.y and laser.colliderect(star):
+                    #laser_hit = laser
                     stars.remove(star)
                     del laser
-                    #break_from_stars = True
-                    break
+       #             print('after star and laser delete')
+       #             #break_from_stars = True
+       #             break
 
-        #if break_from_stars == True:
-           # break
-        
-#------------------------------
+
+
         for star in stars[:]:
             star.y += star_velocity
             if star.y > height:
@@ -175,6 +178,19 @@ def main():
                 stars.remove(star)
                 health -= 1
                 break
+            #elif laser.y + laser_height <= star.y and laser.colliderect(star):
+            #    print('slay')
+            #try:
+            #    stars.remove(star)
+            #    del laser_hit
+            #    print('laser and star delete')
+            #except:
+            #    pass
+            #print('no dl')
+
+            #elif laser_hit.colliderect(star):
+            #    stars.remove(star)
+            #    del laser_hit
 
 
         if health == 0:

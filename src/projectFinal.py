@@ -23,6 +23,10 @@ star_width = 10
 star_height = 20
 star_velocity = 3
 
+laser_width = 5
+laser_height = 10
+laser_velocity = 7
+
 lives = 3
 highscore_file = 'highscore.txt'
 
@@ -37,6 +41,7 @@ def draw(player, elapsed_time, stars, health, highscore):
     highscore_text = font.render(f"Best Time: {highscore}s", 1, (61, 210, 255))
     win.blit(highscore_text, (10, height - 40)) 
 
+    #pygame.draw.rect(win, 'white', projectile)
 
     win.blit(player_ship, player)
 
@@ -44,6 +49,39 @@ def draw(player, elapsed_time, stars, health, highscore):
         win.blit(shooting_star, star)
 
     pygame.display.update()
+
+
+def shoot(stars, player):
+    keys = pygame.key.get_pressed()
+    if keys[pygame.K_SPACE]:
+        
+
+        laser = pygame.Rect(player.x, player.y, 
+                        laser_width, laser_height)
+#(player.x/2), -player.y
+        break_from_stars = False
+        while True:
+
+            laser.y -= laser_velocity
+            if laser.y < -height - laser_height:
+                del laser
+                break
+
+            for star in stars[:]:
+                #print('star')
+                if laser.colliderect(star):
+                    #print('collision')
+                    del star
+                    del laser
+                    break_from_stars = True
+            if break_from_stars == True:
+                break
+
+        #win.blit(laser_img, laser)
+            #print('before pygame draw')
+            pygame.draw.rect(win, 'white', laser)
+            pygame.display.update()
+        print('out of while')
 
 
 
@@ -68,7 +106,7 @@ def main():
     star_add_increment = 2000
     star_count = 0
 
-    stars= []
+    stars = []
     health = lives
 
     while run:
@@ -100,6 +138,9 @@ def main():
             player.y -= player_velocity
         if keys[pygame.K_DOWN] and player.y + player_height + player_velocity <= height:
             player.y += player_velocity
+        #if keys[pygame.K_SPACE]:
+        #    projectile = shoot(stars, player)
+        shoot(stars, player)
 
 
 

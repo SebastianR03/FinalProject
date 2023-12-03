@@ -34,8 +34,8 @@ def draw(player, elapsed_time, stars, health, highscore):
     win.blit(time_text, (10, 10))
     lives_text = font.render(f"Lives: {health}", 1,(61, 210, 255))
     win.blit(lives_text,(10, 50))
-    #highscore_text = font.render(f"Best Time: {highscore}", 1, (223, 143, 227))
-    #win.blit(highscore_text, (10, 20))#height - 
+    highscore_text = font.render(f"Best Time: {highscore}s", 1, (61, 210, 255))
+    win.blit(highscore_text, (10, height - 40)) 
 
 
     win.blit(player_ship, player)
@@ -49,11 +49,8 @@ def draw(player, elapsed_time, stars, health, highscore):
 
 ####main game loop
 def main():
-    with open(highscore_file, 'w') as file:
-        try:
-            highscore = int(file.read())###
-        except:
-            highscore = 0
+    with open(os.path.join(highscore_file), 'r') as file:
+        highscore = int(file.read())
 
 
     music = pygame.mixer.music.load(os.path.join('gameMusic.mp3'))
@@ -117,7 +114,11 @@ def main():
 
 
         if health == 0:
-            lost_text = font.render("You Lost!", 1, "white")
+            if elapsed_time > highscore:
+                lost_text = font.render("New Highscore!", 1, "white")
+            else:
+                lost_text = font.render("You Lost!", 1, "white")
+            
             win.blit(lost_text, (width/2 - lost_text.get_width()/2,
                                   height/2 - lost_text.get_height()/2))
             pygame.display.update()

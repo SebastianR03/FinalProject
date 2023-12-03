@@ -1,9 +1,12 @@
 import pygame 
 import time
 import random
+import os
 
 
 pygame.font.init()
+pygame.mixer.init()
+
 font = pygame.font.SysFont("ariel", 50)
 width, height = 960, 960
 win = pygame.display.set_mode((width, height))
@@ -28,7 +31,7 @@ def draw(player, elapsed_time, stars, health):
     lives_text = font.render(f"Lives: {health}", 1,(61, 210, 255))
     win.blit(lives_text,(10, 50))
 
-    pygame.draw.rect(win, "white", player)
+    pygame.draw.rect(win, (169, 184, 219), player)
 
     for star in stars:
         pygame.draw.rect(win, "white", star)
@@ -39,6 +42,9 @@ def draw(player, elapsed_time, stars, health):
 
 ####main game loop
 def main():
+    music = pygame.mixer.music.load(os.path.join('gameMusic.mp3'))
+    pygame.mixer.music.play(-1)
+
     run = True
 
     player = pygame.Rect((width/2), height - player_height, 

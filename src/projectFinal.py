@@ -30,7 +30,7 @@ laser_velocity = 7
 lives = 3
 highscore_file = 'highscore.txt'
 
-def draw(player, elapsed_time, stars, health, highscore):
+def draw(player, elapsed_time, stars, health, highscore, lasers):
     win.blit(back_ground, (0, 0))
 
     time_text = font.render(f"Time: {round(elapsed_time)}s",
@@ -41,7 +41,8 @@ def draw(player, elapsed_time, stars, health, highscore):
     highscore_text = font.render(f"Best Time: {highscore}s", 1, (61, 210, 255))
     win.blit(highscore_text, (10, height - 40)) 
 
-    #pygame.draw.rect(win, 'white', projectile)
+    for laser in lasers:
+        pygame.draw.rect(win, 'white', laser)
 
     win.blit(player_ship, player)
 
@@ -50,21 +51,21 @@ def draw(player, elapsed_time, stars, health, highscore):
 
     pygame.display.update()
 
-
+'''
 def shoot(stars, player):
-    keys = pygame.key.get_pressed()
-    if keys[pygame.K_SPACE]:
-        
-
         laser = pygame.Rect((player.x + (player.width/2) - 
                              (laser_width/2)), (player.y - 3), 
                         laser_width, laser_height)
 
-        break_from_stars = False
-        while True:
+        #break_from_stars = False
 
-            laser.y -= laser_velocity
-            if laser.y < -height - laser_height:
+        return laser
+        while True:
+            clock = pygame.time.Clock()
+            clock.tick(2000)
+            print('clock run')
+            laser.y -= laser_velocity#cant be in this loop
+            if laser.y < -height - laser_height:#cant be in this loop
                 del laser
                 break
 
@@ -82,9 +83,9 @@ def shoot(stars, player):
                 break
 
         #win.blit(laser_img, laser)
-            pygame.draw.rect(win, 'white', laser)
+            pygame.draw.rect(win, 'white', laser)#cant be in this loop
             pygame.display.update()
-
+'''
 
 
 ####main game loop
@@ -108,6 +109,7 @@ def main():
     star_add_increment = 2000
     star_count = 0
 
+    lasers = []
     stars = []
     health = lives
 
@@ -140,12 +142,31 @@ def main():
             player.y -= player_velocity
         if keys[pygame.K_DOWN] and player.y + player_height + player_velocity <= height:
             player.y += player_velocity
-        #if keys[pygame.K_SPACE]:
-        #    projectile = shoot(stars, player)
-        shoot(stars, player)
+#---------------------------
+        if keys[pygame.K_SPACE]:
+            laser = pygame.Rect((player.x + (player.width/2) - 
+                                 (laser_width/2)), (player.y - 3), 
+                                 laser_width, laser_height)
+            lasers.append(laser)
+            print('laser created')
 
+        for laser in lasers[:]:
+            laser.y -= laser_velocity
+            if laser.y < -height - laser_height:
+                del laser
+                #break
 
+            for star in stars[:]:
+                if laser.colliderect(star):
+                    stars.remove(star)
+                    del laser
+                    #break_from_stars = True
+                    break
 
+        #if break_from_stars == True:
+           # break
+        
+#------------------------------
         for star in stars[:]:
             star.y += star_velocity
             if star.y > height:
@@ -168,7 +189,7 @@ def main():
             pygame.time.delay(4000)
             break
 
-        draw(player, elapsed_time, stars, health, highscore)
+        draw(player, elapsed_time, stars, health, highscore, lasers)
 
     if elapsed_time > highscore:
         highscore = elapsed_time

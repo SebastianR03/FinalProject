@@ -56,9 +56,10 @@ def shoot(stars, player):
     if keys[pygame.K_SPACE]:
         
 
-        laser = pygame.Rect(player.x, player.y, 
+        laser = pygame.Rect((player.x + (player.width/2) - 
+                             (laser_width/2)), (player.y - 3), 
                         laser_width, laser_height)
-#(player.x/2), -player.y
+
         break_from_stars = False
         while True:
 
@@ -70,18 +71,19 @@ def shoot(stars, player):
             for star in stars[:]:
                 #print('star')
                 if laser.colliderect(star):
-                    #print('collision')
-                    del star
+
+                    #star_loca = star
+                    stars.remove(star)
                     del laser
                     break_from_stars = True
+                    break
+
             if break_from_stars == True:
                 break
 
         #win.blit(laser_img, laser)
-            #print('before pygame draw')
             pygame.draw.rect(win, 'white', laser)
             pygame.display.update()
-        print('out of while')
 
 
 

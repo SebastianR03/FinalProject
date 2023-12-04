@@ -14,6 +14,7 @@ pygame.display.set_caption("Don't Die")
 back_ground = pygame.image.load("spaceBackground.jpg")
 player_ship = pygame.image.load("spaceship.png")
 shooting_star = pygame.image.load("shootingstar.png")
+laser_img = pygame.image.load("laser_shot.png")
 
 player_width = 40
 player_height = 60
@@ -30,7 +31,8 @@ laser_velocity = 7
 lives = 3
 highscore_file = 'highscore.txt'
 
-def draw(player, elapsed_time, stars, health, highscore, lasers):
+def draw(player, elapsed_time, stars, health, highscore, lasers, 
+         laser_delete, ammo):
     win.blit(back_ground, (0, 0))
 
     time_text = font.render(f"Time: {round(elapsed_time)}s",
@@ -40,10 +42,12 @@ def draw(player, elapsed_time, stars, health, highscore, lasers):
     win.blit(lives_text,(10, 50))
     highscore_text = font.render(f"Best Time: {highscore}s", 1, (61, 210, 255))
     win.blit(highscore_text, (10, height - 40)) 
+    ammo_text = font.render(f"Ammo: {ammo}", 1,(61, 210, 255))
+    win.blit(ammo_text, (10, 90))
 
-    for laser in lasers[:]:
-        pygame.draw.rect(win, 'white', laser)
-    #win.blit(shooting_star, laser)
+    if laser_delete == False:
+        for laser in lasers:
+            win.blit(laser_img, laser)
 
     win.blit(player_ship, player)
 
@@ -51,42 +55,6 @@ def draw(player, elapsed_time, stars, health, highscore, lasers):
         win.blit(shooting_star, star)
 
     pygame.display.update()
-
-'''
-def shoot(stars, player):
-        laser = pygame.Rect((player.x + (player.width/2) - 
-                             (laser_width/2)), (player.y - 3), 
-                        laser_width, laser_height)
-
-        #break_from_stars = False
-
-        return laser
-        while True:
-            clock = pygame.time.Clock()
-            clock.tick(2000)
-            print('clock run')
-            laser.y -= laser_velocity#cant be in this loop
-            if laser.y < -height - laser_height:#cant be in this loop
-                del laser
-                break
-
-            for star in stars[:]:
-                #print('star')
-                if laser.colliderect(star):
-
-                    #star_loca = star
-                    stars.remove(star)
-                    del laser
-                    break_from_stars = True
-                    break
-
-            if break_from_stars == True:
-                break
-
-        #win.blit(laser_img, laser)
-            pygame.draw.rect(win, 'white', laser)#cant be in this loop
-            pygame.display.update()
-'''
 
 
 ####main game loop
@@ -118,6 +86,8 @@ def main():
 
     laser_count = 0
     laser_add_increment = 4000
+    laser_delete = False
+    ammo = 3
 
     while run:
         star_count += clock.tick(60)
@@ -152,14 +122,16 @@ def main():
         
 #---------------------------------------------------------
         laser_count += 12
-        if laser_count > laser_add_increment:
+        if laser_count > laser_add_increment and ammo > 0:
 
             if keys[pygame.K_SPACE]:
                 laser = pygame.Rect((player.x + (player.width/2) - 
                                     (laser_width/2)), (player.y - 3), 
                                     laser_width, laser_height)
+                ammo -= 1
                 lasers.append(laser)
                 pressed = True
+                laser_delete = False
                 laser_count = 0
 
         if pressed == True:
@@ -168,21 +140,19 @@ def main():
                         #print('star 1')
                 laser.y -= laser_velocity
                 if laser.y + laser_height <= 0:
+                    laser_delete = True
                     del laser
-                                #print('laser delete')
                     pressed = False
                     break                        
                 elif pygame.Rect.colliderect(laser, star):
                     print('before star delete')
-                    try:
- 
-                        del laser
-                        stars.remove(star)
+                    laser_delete = True
+                    del laser
+                    stars.remove(star)
+                    pressed = False
+                    break
+                    
 
-                        pressed = False
-                        break
-                    except:
-                        print('no deletion')
 #laser.x == star.x and laser.colliderect(star)
                     #laser.y <= star.y + star.height and 
                             #print('hit but didnt work')
@@ -218,7 +188,8 @@ def main():
             pygame.time.delay(4000)
             break
 
-        draw(player, elapsed_time, stars, health, highscore, lasers)
+        draw(player, elapsed_time, stars, health, highscore, lasers, 
+             laser_delete, ammo)
 
     if elapsed_time > highscore:
         highscore = elapsed_time

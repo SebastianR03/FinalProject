@@ -1,3 +1,7 @@
 The background image was created by Dinchen Schlick, a link to their ArtStation: https://www.artstation.com/dinchensart
 
 the music was provided by bensound.com, a song called Riddled With Errors by Benjamin Lazzarus
+
+Video tutorial that helped me create the foundation of the game by Tech With Tim on Youtube
+https://www.youtube.com/watch?v=waY3LfJhQLY&t=26s
+

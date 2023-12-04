@@ -7,7 +7,8 @@
 
 ### GitHub URL https://github.com/SebastianR03/FinalProject
 
-### Lengthier Explanation:
+
+## Lengthier Explanation:
 ###  The starting foundation of the game guided how I created features like shooting, lives, and many others. 
 ### The code to shoot had given me the hardest time though because of how the game loop and draw function interacted 
 ### with each other and if you look closely enough at either the video or if you try out the game, you'll see that the 

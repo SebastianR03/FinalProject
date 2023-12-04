@@ -4,6 +4,7 @@ import random
 import os
 from os import path
 
+
 pygame.font.init()
 pygame.mixer.init()
 
@@ -92,7 +93,7 @@ def main():
     while run:
         star_count += clock.tick(60)
         elapsed_time = int(time.time() - start_time)
-        #print(star_count)
+
 
         if star_count > star_add_increment:
             for _ in range(3):
@@ -137,7 +138,7 @@ def main():
         if pressed == True:
 
             for star in stars[:]:
-                        #print('star 1')
+
                 laser.y -= laser_velocity
                 if laser.y + laser_height <= 0:
                     laser_delete = True
@@ -152,19 +153,6 @@ def main():
                     pressed = False
                     break
                     
-
-#laser.x == star.x and laser.colliderect(star)
-                    #laser.y <= star.y + star.height and 
-                            #print('hit but didnt work')
-
-            #if pressed == False:
-                #break
-
-
-
-                    
-
-
 
         for star in stars[:]:
             star.y += star_velocity

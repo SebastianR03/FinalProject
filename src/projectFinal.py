@@ -23,8 +23,8 @@ star_width = 10
 star_height = 20
 star_velocity = 3
 
-laser_width = 5
-laser_height = 10
+laser_width = 20
+laser_height = 40
 laser_velocity = 7
 
 lives = 3
@@ -41,8 +41,9 @@ def draw(player, elapsed_time, stars, health, highscore, lasers):
     highscore_text = font.render(f"Best Time: {highscore}s", 1, (61, 210, 255))
     win.blit(highscore_text, (10, height - 40)) 
 
-    for laser in lasers:
+    for laser in lasers[:]:
         pygame.draw.rect(win, 'white', laser)
+    #win.blit(shooting_star, laser)
 
     win.blit(player_ship, player)
 
@@ -152,8 +153,6 @@ def main():
 #---------------------------------------------------------
         laser_count += 12
         if laser_count > laser_add_increment:
-            #laser_add_increment = max(200, laser_add_increment - 50)
-            #laser_count = 0
 
             if keys[pygame.K_SPACE]:
                 laser = pygame.Rect((player.x + (player.width/2) - 
@@ -164,28 +163,33 @@ def main():
                 laser_count = 0
 
         if pressed == True:
-            #for laser in lasers[:]:
-                #print('laser 1')
+
             for star in stars[:]:
-                    #print('star 1')
+                        #print('star 1')
                 laser.y -= laser_velocity
                 if laser.y + laser_height <= 0:
                     del laser
-                            #print('laser delete')
+                                #print('laser delete')
                     pressed = False
-                    break
+                    break                        
+                elif pygame.Rect.colliderect(laser, star):
+                    print('before star delete')
+                    try:
+ 
+                        del laser
+                        stars.remove(star)
 
-                    
-                #elif laser.y <= star.y + star.height and laser.colliderect(star):
-                #    stars.remove(star)
-                #    del laser
-                #    pressed = False
-                #    break
+                        pressed = False
+                        break
+                    except:
+                        print('no deletion')
+#laser.x == star.x and laser.colliderect(star)
+                    #laser.y <= star.y + star.height and 
+                            #print('hit but didnt work')
 
             #if pressed == False:
                 #break
-            #if pressed == False:
-                    #break
+
 
 
                     
